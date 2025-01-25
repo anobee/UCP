@@ -11,12 +11,12 @@ class Database:
         self.connect_db()
 
     def connect_db(self):
-        """Membuka koneksi ke database SQLite"""
+        """koneksi ke database SQLite"""
         self.conn = sqlite3.connect(self.db_name)
         self.cursor = self.conn.cursor()
 
     def create_table(self):
-        """Membuat tabel jika belum ada"""
+        """Membuat tabel"""
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,13 +28,13 @@ class Database:
         self.conn.commit()
 
     def insert_data(self, nama, umur, alamat):
-        """Menyimpan data ke dalam database"""
+        """nyimpan data ke dalam database"""
         self.cursor.execute("INSERT INTO users (nama, umur, alamat) VALUES (?, ?, ?)",
                             (nama, umur, alamat))
         self.conn.commit()
 
     def fetch_all_data(self):
-        """Mengambil semua data dari database"""
+        """ambil semua data dari database"""
         self.cursor.execute("SELECT * FROM users")
         return self.cursor.fetchall()
 
@@ -82,7 +82,7 @@ class Aplikasi:
         self.show_button.grid(row=4, column=0, columnspan=2, pady=10)
 
     def submit_data(self):
-        """Menyimpan data ke database SQLite"""
+        """simpan data ke database SQLite"""
         nama = self.entry_nama.get()
         umur = self.entry_umur.get()
         alamat = self.entry_alamat.get()
@@ -108,30 +108,21 @@ class Aplikasi:
         self.entry_alamat.delete(0, tk.END)
 
     def show_data(self):
-        """Menampilkan data yang sudah disimpan dalam database"""
+        """show data yang sudah disimpan dalam database"""
         data = self.db.fetch_all_data()
         if data:
             data_str = "\n".join([f"ID: {row[0]}, Nama: {row[1]}, Umur: {row[2]}, Alamat: {row[3]}" for row in data])
             messagebox.showinfo("Data yang Tersimpan", data_str)
         else:
-            messagebox.showinfo("Data Kosong", "Tidak ada data dalam database.")
+            messagebox.showinfo("Data ga ada", "Tidak ada data dalam database.")
 
 
 # Main program
 def main():
-    # Membuat koneksi ke database SQLite
     db = Database('data.db')
-
-    # Membuat window tkinter
     root = tk.Tk()
-
-    # Membuat instance Aplikasi dengan root window dan database
     app = Aplikasi(root, db)
-
-    # Menjalankan aplikasi
     root.mainloop()
-
-    # Menutup koneksi database setelah aplikasi ditutup
     db.close()
 
 
